@@ -6,9 +6,9 @@ GOAT ?= goat
 
 SPECTRAL_VERSION ?= 6.15.0
 
-.PHONY: verify lex-lint lex-breaking fixtures-test xml-validate openapi-lint install-tools
+.PHONY: verify lex-lint lex-breaking fixtures-test xml-validate openapi-lint generate generate-check install-tools
 
-verify: lex-lint lex-breaking fixtures-test xml-validate openapi-lint
+verify: lex-lint lex-breaking fixtures-test xml-validate openapi-lint generate-check
 
 # Schema syntax plus lint policy (allowed warnings are documented in
 # scripts/lex_lint.py and docs/lexicons.md).
@@ -34,6 +34,15 @@ xml-validate:
 # OpenAPI contract lint (fails on warnings).
 openapi-lint:
 	npx --yes @stoplight/spectral-cli@$(SPECTRAL_VERSION) lint --fail-severity=warn openapi/openapi.yaml
+
+# Regenerate the Go API model types from the OpenAPI contract.
+# (The oapi-codegen version is pinned via the go.mod tool directive.)
+generate:
+	go tool oapi-codegen -config oapi-codegen.yaml openapi/openapi.yaml
+
+# Fail when committed generated code is stale.
+generate-check: generate
+	git diff --exit-code -- generated/
 
 install-tools:
 	sh scripts/install-goat.sh

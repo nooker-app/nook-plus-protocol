@@ -1,0 +1,6 @@
+# Configuration for generating Go API model types from openapi/openapi.yaml.
+# Regenerate with: make generate
+package: nookplusapi
+generate:
+  models: true
+output: generated/go/nookplusapi/types.gen.go
