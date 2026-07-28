@@ -3,7 +3,7 @@
 Repository releases are semantic version tags describing the repository and
 its generated artifacts; see `docs/versioning.md`.
 
-## Unreleased (targeting v0.1.0)
+## v0.1.0 — 2026-07-28
 
 Initial protocol surface:
 
