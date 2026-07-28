@@ -4,9 +4,9 @@
 
 GOAT ?= goat
 
-.PHONY: verify lex-lint lex-breaking install-tools
+.PHONY: verify lex-lint lex-breaking fixtures-test install-tools
 
-verify: lex-lint lex-breaking
+verify: lex-lint lex-breaking fixtures-test
 
 # Schema syntax plus lint policy (allowed warnings are documented in
 # scripts/lex_lint.py and docs/lexicons.md).
@@ -17,6 +17,10 @@ lex-lint:
 # NSIDs that do not resolve yet are skipped by goat.
 lex-breaking:
 	$(GOAT) lex breaking lexicons
+
+# Record fixtures against the Lexicon schemas (valid must pass, invalid must fail).
+fixtures-test:
+	go test ./conformance/...
 
 install-tools:
 	sh scripts/install-goat.sh
