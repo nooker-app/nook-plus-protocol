@@ -1,0 +1,9 @@
+extends: ["spectral:oas"]
+rules:
+  oas3-server-trailing-slash: error
+  operation-tags: error
+  operation-operationId: error
+  # Every operation has a summary; a separate description is required only
+  # where behavior needs explanation beyond the schema (idempotency, async
+  # publishing, deletion semantics).
+  operation-description: off

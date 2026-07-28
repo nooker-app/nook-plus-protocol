@@ -4,9 +4,11 @@
 
 GOAT ?= goat
 
-.PHONY: verify lex-lint lex-breaking fixtures-test xml-validate install-tools
+SPECTRAL_VERSION ?= 6.15.0
 
-verify: lex-lint lex-breaking fixtures-test xml-validate
+.PHONY: verify lex-lint lex-breaking fixtures-test xml-validate openapi-lint install-tools
+
+verify: lex-lint lex-breaking fixtures-test xml-validate openapi-lint
 
 # Schema syntax plus lint policy (allowed warnings are documented in
 # scripts/lex_lint.py and docs/lexicons.md).
@@ -28,6 +30,10 @@ fixtures-test:
 xml-validate:
 	xmllint --noout fixtures/rss/*.xml fixtures/atom/*.xml
 	xmllint --noout --relaxng schemas/atom.rng fixtures/atom/*.xml
+
+# OpenAPI contract lint (fails on warnings).
+openapi-lint:
+	npx --yes @stoplight/spectral-cli@$(SPECTRAL_VERSION) lint --fail-severity=warn openapi/openapi.yaml
 
 install-tools:
 	sh scripts/install-goat.sh
