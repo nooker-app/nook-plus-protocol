@@ -37,9 +37,9 @@ them. A move to AT Protocol OAuth is an open item in
 - The member identifier in all service data is the DID.
 - Records are addressed by rkey within the authenticated member's own
   repository; the API never operates on another member's records.
-- Responses reference records by AT URI. Firestore-style database
-  identifiers, storage paths, or other implementation details MUST NOT
-  appear in this API.
+- Responses reference records by AT URI. Internal database identifiers,
+  storage paths, or other implementation details MUST NOT appear in this
+  API.
 
 ## Idempotency
 

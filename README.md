@@ -50,14 +50,25 @@ See `docs/ownership.md`, `docs/deletion.md`, `docs/portability.md`, and
 
 ## Validation
 
-From a clean checkout:
+From a clean checkout (Go 1.24+, `xmllint`, and Node.js for the OpenAPI
+linter; run `make install-tools` once for the Lexicon CLI):
 
 ```sh
-make verify
+make verify      # lex-lint, lex-breaking, fixtures-test, xml-validate,
+                 # openapi-lint, generate-check
+make swift-test  # Swift package tests (requires a Swift 6 toolchain)
 ```
 
-`make verify` runs every check that applies to the files currently present.
-Individual targets are documented in the `Makefile`.
+Individual targets are documented in the `Makefile`. CI runs both on every
+push.
+
+## Using The Types
+
+- **Go**: `go get github.com/nooker-app/nook-plus-protocol` — record types
+  in `generated/go/nookplusrecords`, API model types in
+  `generated/go/nookplusapi`.
+- **Swift**: add this repository as a Swift Package Manager dependency and
+  import `NookPlusProtocol`. All types are `Codable` and `Sendable`.
 
 ## Versioning
 
