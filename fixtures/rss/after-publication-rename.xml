@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Example Publication (Renamed)</title>
+    <link>https://publications.example.com/@example-publication</link>
+    <description>Same record identity as publication-create; only the display name changed.</description>
+    <language>en</language>
+    <lastBuildDate>Thu, 15 Jan 2026 09:30:00 GMT</lastBuildDate>
+    <atom:link href="https://publications.example.com/@example-publication/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>An Example Article</title>
+      <link>https://publications.example.com/@example-publication/an-example-article</link>
+      <guid isPermaLink="false">at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.article/3jt5artcreate</guid>
+      <pubDate>Thu, 15 Jan 2026 09:30:00 GMT</pubDate>
+      <description>A short synthetic summary.</description>
+      <dc:creator>Example Author</dc:creator>
+      <content:encoded>&lt;p&gt;Hello from an example article.&lt;/p&gt;
+</content:encoded>
+    </item>
+    <item>
+      <title>안녕하세요, 예제 글입니다</title>
+      <link>https://publications.example.com/@example-publication/korean-article</link>
+      <guid isPermaLink="false">at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.article/3jt5artkorean</guid>
+      <pubDate>Thu, 15 Jan 2026 09:30:00 GMT</pubDate>
+      <description>한국어 요약입니다.</description>
+      <dc:creator>Example Author</dc:creator>
+      <content:encoded>&lt;h1&gt;한국어 본문&lt;/h1&gt;
+&lt;p&gt;이 글은 한국어 픽스처입니다. &lt;strong&gt;굵게&lt;/strong&gt;, &lt;em&gt;기울임&lt;/em&gt;, 그리고 &lt;a href="https://example.com"&gt;링크&lt;/a&gt;도 포함합니다.&lt;/p&gt;
+</content:encoded>
+    </item>
+  </channel>
+</rss>

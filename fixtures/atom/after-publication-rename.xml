@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <id>at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5mavarik22</id>
+  <title>Example Publication (Renamed)</title>
+  <subtitle>Same record identity as publication-create; only the display name changed.</subtitle>
+  <link href="https://publications.example.com/@example-publication" rel="alternate" type="text/html"/>
+  <link href="https://publications.example.com/@example-publication/atom.xml" rel="self" type="application/atom+xml"/>
+  <updated>2026-01-15T09:30:00Z</updated>
+  <author>
+    <name>Example Author</name>
+    <uri>https://publications.example.com/@example-publication</uri>
+  </author>
+  <entry>
+    <id>at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.article/3jt5artcreate</id>
+    <title>An Example Article</title>
+    <link href="https://publications.example.com/@example-publication/an-example-article" rel="alternate" type="text/html"/>
+    <published>2026-01-15T09:30:00Z</published>
+    <updated>2026-01-15T09:30:00Z</updated>
+    <summary>A short synthetic summary.</summary>
+    <content type="html">&lt;p&gt;Hello from an example article.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <id>at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.article/3jt5artkorean</id>
+    <title>안녕하세요, 예제 글입니다</title>
+    <link href="https://publications.example.com/@example-publication/korean-article" rel="alternate" type="text/html"/>
+    <published>2026-01-15T09:30:00Z</published>
+    <updated>2026-01-15T09:30:00Z</updated>
+    <summary>한국어 요약입니다.</summary>
+    <content type="html">&lt;h1&gt;한국어 본문&lt;/h1&gt;
+&lt;p&gt;이 글은 한국어 픽스처입니다. &lt;strong&gt;굵게&lt;/strong&gt;, &lt;em&gt;기울임&lt;/em&gt;, 그리고 &lt;a href="https://example.com"&gt;링크&lt;/a&gt;도 포함합니다.&lt;/p&gt;
+</content>
+  </entry>
+</feed>

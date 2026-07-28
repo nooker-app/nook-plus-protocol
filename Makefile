@@ -4,9 +4,9 @@
 
 GOAT ?= goat
 
-.PHONY: verify lex-lint lex-breaking fixtures-test install-tools
+.PHONY: verify lex-lint lex-breaking fixtures-test xml-validate install-tools
 
-verify: lex-lint lex-breaking fixtures-test
+verify: lex-lint lex-breaking fixtures-test xml-validate
 
 # Schema syntax plus lint policy (allowed warnings are documented in
 # scripts/lex_lint.py and docs/lexicons.md).
@@ -21,6 +21,13 @@ lex-breaking:
 # Record fixtures against the Lexicon schemas (valid must pass, invalid must fail).
 fixtures-test:
 	go test ./conformance/...
+
+# Feed fixtures: XML well-formedness for both formats, plus the vendored
+# RFC 4287 RelaxNG schema for Atom. (RSS 2.0 has no official schema; RSS
+# structure is exercised by a real parser in conformance/feed_test.go.)
+xml-validate:
+	xmllint --noout fixtures/rss/*.xml fixtures/atom/*.xml
+	xmllint --noout --relaxng schemas/atom.rng fixtures/atom/*.xml
 
 install-tools:
 	sh scripts/install-goat.sh

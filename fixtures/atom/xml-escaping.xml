@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <id>at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5mavarik22</id>
+  <title>Example Publication</title>
+  <subtitle>A synthetic publication used in conformance fixtures.</subtitle>
+  <link href="https://publications.example.com/@example-publication" rel="alternate" type="text/html"/>
+  <link href="https://publications.example.com/@example-publication/atom.xml" rel="self" type="application/atom+xml"/>
+  <updated>2026-01-15T09:30:00Z</updated>
+  <author>
+    <name>Example Author</name>
+    <uri>https://publications.example.com/@example-publication</uri>
+  </author>
+  <entry>
+    <id>at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.article/3jt5artxmlesc</id>
+    <title>Fish &amp; Chips &lt;deluxe&gt; "quoted" 'single'</title>
+    <link href="https://publications.example.com/@example-publication/xml-specials" rel="alternate" type="text/html"/>
+    <published>2026-01-15T09:30:00Z</published>
+    <updated>2026-01-15T09:30:00Z</updated>
+    <content type="html">&lt;p&gt;XML specials: &amp;lt; &amp;gt; &amp;amp; &amp;quot; ' and ]]&amp;gt; plus &lt;!-- raw HTML omitted --&gt;alert('x')&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+</content>
+  </entry>
+</feed>
