@@ -1,0 +1,16 @@
+# Swift
+.build/
+.swiftpm/
+DerivedData/
+
+# Go
+/bin/
+*.test
+*.out
+/vendor/
+
+# Node (used only for on-demand lint tooling)
+node_modules/
+
+# OS
+.DS_Store
