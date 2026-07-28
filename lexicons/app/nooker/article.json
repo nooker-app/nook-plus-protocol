@@ -1,0 +1,57 @@
+{
+  "lexicon": 1,
+  "id": "app.nooker.article",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A Markdown article belonging to a publication. Presence of this record in a repository makes the article public; drafts are not represented as records.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["publication", "title", "content", "slug", "publishedAt"],
+        "properties": {
+          "publication": {
+            "type": "string",
+            "description": "AT URI of the app.nooker.publication record this article belongs to. This is the stable reference; presentation URLs must not be used. If the referenced record does not exist, the article remains schema-valid but is excluded from rendered pages and feeds.",
+            "format": "at-uri"
+          },
+          "title": {
+            "type": "string",
+            "description": "Article title.",
+            "minLength": 1,
+            "maxGraphemes": 300,
+            "maxLength": 3000
+          },
+          "content": {
+            "type": "string",
+            "description": "Article body as Markdown text (CommonMark plus GFM tables and strikethrough). No image, media, or attachment semantics in this revision.",
+            "minLength": 1,
+            "maxLength": 100000
+          },
+          "summary": {
+            "type": "string",
+            "description": "Optional plain-text summary.",
+            "maxGraphemes": 600,
+            "maxLength": 6000
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL path segment for the article, unique within its publication. Lowercase ASCII letters, digits, and hyphens; must not start or end with a hyphen. Mutable presentation attribute; uniqueness is enforced by the publishing service, not by this schema.",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "publishedAt": {
+            "type": "string",
+            "description": "Client-declared publication time (RFC 3339).",
+            "format": "datetime"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Client-declared time of the most recent content update (RFC 3339).",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

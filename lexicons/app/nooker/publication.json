@@ -1,0 +1,51 @@
+{
+  "lexicon": 1,
+  "id": "app.nooker.publication",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A publication: a named collection of articles published as a web page and as RSS/Atom feeds. Presence of this record in a repository makes the publication public.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["name", "slug", "language", "createdAt"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Display name of the publication. Mutable presentation attribute.",
+            "minLength": 1,
+            "maxGraphemes": 100,
+            "maxLength": 1000
+          },
+          "description": {
+            "type": "string",
+            "description": "Short plain-text description of the publication.",
+            "maxGraphemes": 600,
+            "maxLength": 6000
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL path segment for the publication. Lowercase ASCII letters, digits, and hyphens; must not start or end with a hyphen. Mutable presentation attribute; uniqueness is enforced by the publishing service, not by this schema.",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "language": {
+            "type": "string",
+            "description": "Primary language of the publication (BCP-47).",
+            "format": "language"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Client-declared creation time (RFC 3339).",
+            "format": "datetime"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Client-declared time of the most recent update (RFC 3339).",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}
