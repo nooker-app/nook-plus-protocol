@@ -1,0 +1,9 @@
+{
+  "$type": "app.nooker.article",
+  "publication": "at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5mavarik22",
+  "title": "안녕하세요, 예제 글입니다",
+  "content": "# 한국어 본문\n\n이 글은 한국어 픽스처입니다. **굵게**, *기울임*, 그리고 [링크](https://example.com)도 포함합니다.\n",
+  "slug": "korean-article",
+  "publishedAt": "2026-01-15T09:30:00Z",
+  "summary": "한국어 요약입니다."
+}

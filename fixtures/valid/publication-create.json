@@ -1,0 +1,8 @@
+{
+  "$type": "app.nooker.publication",
+  "name": "Example Publication",
+  "slug": "example-publication",
+  "language": "en",
+  "createdAt": "2026-01-10T08:00:00Z",
+  "description": "A synthetic publication used in conformance fixtures."
+}

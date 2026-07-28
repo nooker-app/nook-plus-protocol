@@ -1,0 +1,8 @@
+{
+  "$type": "app.nooker.article",
+  "publication": "at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5mavarik22",
+  "title": "Fish & Chips <deluxe> \"quoted\" 'single'",
+  "content": "XML specials: < > & \" ' and ]]> plus <script>alert('x')</script>\n",
+  "slug": "xml-specials",
+  "publishedAt": "2026-01-15T09:30:00Z"
+}

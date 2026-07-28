@@ -1,0 +1,7 @@
+{
+  "$type": "app.nooker.publication",
+  "name": "Example Publication",
+  "slug": "example-publication",
+  "language": "not a language!!",
+  "createdAt": "2026-01-10T08:00:00Z"
+}

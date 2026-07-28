@@ -1,0 +1,9 @@
+{
+  "$type": "app.nooker.publication",
+  "name": "Example Publication (Renamed)",
+  "slug": "example-publication",
+  "language": "en",
+  "createdAt": "2026-01-10T08:00:00Z",
+  "description": "Same record identity as publication-create; only the display name changed.",
+  "updatedAt": "2026-02-01T10:00:00Z"
+}

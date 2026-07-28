@@ -1,0 +1,8 @@
+{
+  "$type": "app.nooker.article",
+  "publication": "at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5mavarik22",
+  "title": "Markdown Features",
+  "content": "A [link](https://example.com/page) and `inline code`.\n\n```go\nfunc main() {\n\tfmt.Println(\"hello\")\n}\n```\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n~~strikethrough~~\n",
+  "slug": "markdown-features",
+  "publishedAt": "2026-01-15T09:30:00Z"
+}

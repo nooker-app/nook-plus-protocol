@@ -1,0 +1,8 @@
+{
+  "$type": "app.nooker.article",
+  "publication": "at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5nonexist2",
+  "title": "Orphaned Article",
+  "content": "This article references a publication record that does not exist. It is schema-valid but excluded from rendered pages and feeds.\n",
+  "slug": "orphaned-article",
+  "publishedAt": "2026-01-15T09:30:00Z"
+}

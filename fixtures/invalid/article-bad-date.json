@@ -1,0 +1,8 @@
+{
+  "$type": "app.nooker.article",
+  "publication": "at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5mavarik22",
+  "title": "An Example Article",
+  "content": "Hello from an example article.\n",
+  "slug": "an-example-article",
+  "publishedAt": "2026-13-45"
+}
