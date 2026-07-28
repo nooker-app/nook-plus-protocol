@@ -6,7 +6,7 @@ GOAT ?= goat
 
 SPECTRAL_VERSION ?= 6.15.0
 
-.PHONY: verify lex-lint lex-breaking fixtures-test xml-validate openapi-lint generate generate-check install-tools
+.PHONY: verify lex-lint lex-breaking fixtures-test xml-validate openapi-lint generate generate-check swift-test install-tools
 
 verify: lex-lint lex-breaking fixtures-test xml-validate openapi-lint generate-check
 
@@ -43,6 +43,11 @@ generate:
 # Fail when committed generated code is stale.
 generate-check: generate
 	git diff --exit-code -- generated/
+
+# Swift package tests (requires a Swift 6 toolchain; CI runs this in a
+# Swift container as a separate job from `verify`).
+swift-test:
+	swift test
 
 install-tools:
 	sh scripts/install-goat.sh

@@ -20,3 +20,11 @@ jobs:
           make install-tools
       - name: Verify
         run: make verify
+
+  swift:
+    runs-on: ubuntu-latest
+    container: swift:6.1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift tests
+        run: swift test
