@@ -44,11 +44,10 @@ generate:
 generate-check: generate
 	git diff --exit-code -- generated/
 
-# Swift package tests (requires a Swift 6 toolchain; CI runs this in a
-# Swift container as a separate job from `verify`).
-# Requires a Swift 6.1+ toolchain. The service API target generates its
-# sources during this build, so this also proves the OpenAPI document
-# produces a compiling client.
+# Swift package tests. Requires a Swift 6.1+ toolchain; CI runs this in a
+# Swift container as a separate job from `verify`. The service API target
+# generates its sources during this build, so this also proves the OpenAPI
+# document produces a client that compiles.
 swift-test:
 	swift test
 
