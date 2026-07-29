@@ -6,7 +6,7 @@ GOAT ?= goat
 
 SPECTRAL_VERSION ?= 6.15.0
 
-.PHONY: verify lex-lint lex-breaking fixtures-test xml-validate openapi-lint generate generate-check swift-test install-tools
+.PHONY: verify lex-lint lex-breaking lex-published fixtures-test xml-validate openapi-lint generate generate-check swift-test install-tools
 
 verify: lex-lint lex-breaking fixtures-test xml-validate openapi-lint generate-check
 
@@ -50,6 +50,12 @@ generate-check: generate
 # document produces a client that compiles.
 swift-test:
 	swift test
+
+# Compare the local schemas with what the network resolves. Requires
+# network access and only reports usefully once the schemas are published,
+# so it stays out of `verify`. See docs/lexicon-publishing.md.
+lex-published:
+	$(GOAT) lex status lexicons
 
 install-tools:
 	sh scripts/install-goat.sh
