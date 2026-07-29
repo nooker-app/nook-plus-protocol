@@ -82,10 +82,39 @@ Do not place credentials, deployment configuration, operational runbooks, custom
 
 ## Generated Code
 
+Two mechanisms are in use, and both must guarantee that generated code
+cannot disagree with its source.
+
+**Committed generation** — Go types under `generated/go/`. Output is produced
+by `make generate`, committed, and checked by `make generate-check`, which
+fails when the committed output is stale.
+
+**Build-time generation** — the `NookPlusServiceAPI` Swift target. Apple's
+swift-openapi-generator runs as a SwiftPM build plugin over `openapi/`, so
+the types and client are produced at build time and are deliberately **not**
+committed. They cannot go stale because they do not exist independently of
+the specification. The generator version is pinned exactly in
+`Package.swift`, and `Package.resolved` is committed.
+
+Rules that apply to both:
+
 - Generated files must identify their source and generation command.
-- Do not hand-edit generated files. Change the Lexicon or generator and regenerate them.
-- Generation must be deterministic so a clean checkout can reproduce committed output.
-- Keep generated APIs small and free from dependencies on a specific server architecture.
+- Do not hand-edit generated files. Change the Lexicon, the OpenAPI
+  document, or the generator, and regenerate.
+- Generation must be deterministic so a clean checkout reproduces the same
+  output.
+- Keep generated APIs small and free from dependencies on a specific server
+  architecture. The generated Swift client stops at the transport
+  abstraction; a URLSession transport and authentication middleware belong to
+  the consuming application.
+- The canonical OpenAPI document lives at `openapi/openapi.yaml` and is never
+  copied or symlinked. The Swift target's path *is* that directory, which is
+  what keeps a single copy.
+
+Record types (`PublicationRecord`, `ArticleRecord`) and the PDS record
+envelopes are hand-maintained in `NookPlusProtocol`, verified against the
+shared fixtures by tests in both languages. The hand-written service API
+types in that product are deprecated as of v0.2.0 and are removed in v1.0.0.
 
 ## Documentation Standards
 

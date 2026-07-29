@@ -1,0 +1,9 @@
+# swift-openapi-generator configuration.
+#
+# The generator runs as a SwiftPM build plugin against openapi.yaml in this
+# same directory, so there is exactly one copy of the specification and the
+# generated client cannot drift from it.
+generate:
+  - types
+  - client
+accessModifier: public
