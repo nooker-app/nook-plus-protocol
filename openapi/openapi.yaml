@@ -159,6 +159,14 @@ paths:
                     $ref: "#/components/schemas/Session"
                   defaultPublication:
                     $ref: "#/components/schemas/Publication"
+                  handleResolves:
+                    type: boolean
+                    description: |
+                      Whether public handle resolution was observed. False means
+                      the record exists but has not propagated yet; the account
+                      is fully usable either way, so a client MUST present this
+                      as pending rather than as a failure, and MUST NOT block
+                      onboarding on it.
         default:
           $ref: "#/components/responses/Problem"
 
