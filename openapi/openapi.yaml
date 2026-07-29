@@ -225,6 +225,61 @@ paths:
         default:
           $ref: "#/components/responses/Problem"
 
+  /v1/publications/{rkey}:
+    put:
+      operationId: updatePublication
+      tags: [publishing]
+      summary: Replace a publication record.
+      description: |
+        Updates the PDS record and returns the new representation with its
+        CID. Public representations follow asynchronously; when the slug
+        changes, the returned URLs are the new ones.
+      security:
+        - pdsSession: []
+      parameters:
+        - $ref: "#/components/parameters/RecordKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PublicationInput"
+      responses:
+        "200":
+          description: Publication record replaced.
+          headers:
+            ETag:
+              $ref: "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Publication"
+        default:
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deletePublication
+      tags: [publishing]
+      summary: Delete a publication record.
+      description: |
+        Deletes the publication record only. Articles are **not**
+        cascade-deleted: a service cannot remove records a user did not ask
+        it to remove. Articles left referencing it stay schema-valid but are
+        excluded from public representations.
+
+        Available to suspended and revoked members. Idempotent: deleting an
+        absent record succeeds.
+      security:
+        - pdsSession: []
+      parameters:
+        - $ref: "#/components/parameters/RecordKey"
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204":
+          description: Record deleted (or already absent).
+        default:
+          $ref: "#/components/responses/Problem"
+
   /v1/publications/{rkey}/urls:
     get:
       operationId: getPublicationUrls
@@ -262,6 +317,9 @@ paths:
       responses:
         "201":
           description: Article record created. Publishing to public representations is asynchronous.
+          headers:
+            ETag:
+              $ref: "#/components/headers/ETag"
           content:
             application/json:
               schema:
@@ -278,21 +336,25 @@ paths:
         - pdsSession: []
       parameters:
         - $ref: "#/components/parameters/RecordKey"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ArticleInput"
+        - $ref: "#/components/parameters/IfMatch"
       responses:
         "200":
           description: Article record replaced.
+          headers:
+            ETag:
+              $ref: "#/components/headers/ETag"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Article"
         default:
           $ref: "#/components/responses/Problem"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticleInput"
     delete:
       operationId: deleteArticle
       tags: [publishing]
@@ -301,10 +363,13 @@ paths:
         Deletes the authoritative record. Removal from public
         representations follows the documented propagation delay. Deletion
         is idempotent; deleting an absent record succeeds.
+
+        Available to suspended and revoked members.
       security:
         - pdsSession: []
       parameters:
         - $ref: "#/components/parameters/RecordKey"
+        - $ref: "#/components/parameters/IfMatch"
       responses:
         "204":
           description: Record deleted (or already absent).
@@ -354,33 +419,98 @@ paths:
         default:
           $ref: "#/components/responses/Problem"
 
-  /v1/account/deletion-requests:
+  /v1/service-disconnection-requests:
     post:
-      operationId: requestAccountDeletion
+      operationId: requestServiceDisconnection
       tags: [data]
-      summary: Request deletion of the member's service data and public representations.
+      summary: Disconnect the member from the service, keeping their PDS account.
       description: |
-        Available regardless of membership status. Covers Nook-controlled
-        representations and service metadata; the member's PDS records and
-        account are governed by the PDS itself.
+        Removes membership, the service's operational data about the member,
+        and every public representation the service generated. The PDS
+        account, its DID, its handle, and its records are untouched.
+
+        Available regardless of membership status. Reconnecting requires a
+        new invitation. See `account-lifecycle.md` for how this differs from
+        deleting content and from deleting the PDS account.
       security:
         - pdsSession: []
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
       responses:
         "202":
-          description: Deletion request accepted.
+          description: Disconnection request accepted.
           content:
             application/json:
               schema:
-                type: object
-                required: [id, status]
-                properties:
-                  id:
-                    type: string
-                  status:
-                    type: string
-                    enum: [pending, processing, completed]
+                $ref: "#/components/schemas/DisconnectionReceipt"
+        default:
+          $ref: "#/components/responses/Problem"
+
+  /v1/service-disconnection-requests/{requestId}:
+    get:
+      operationId: getServiceDisconnection
+      tags: [data]
+      summary: Read the status of a disconnection request.
+      description: |
+        A completed or failed receipt stays queryable for 24 hours and is
+        then hard-deleted, after which this returns `record-not-found`.
+      security:
+        - pdsSession: []
+      parameters:
+        - $ref: "#/components/parameters/RequestID"
+      responses:
+        "200":
+          description: Disconnection request state.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DisconnectionReceipt"
+        default:
+          $ref: "#/components/responses/Problem"
+
+  /v1/account/deletion-requests:
+    post:
+      operationId: requestAccountDeletion
+      deprecated: true
+      tags: [data]
+      summary: Deprecated alias for service disconnection.
+      description: |
+        Deprecated: the name describes something this never did. It does not
+        delete an account. Use `POST /v1/service-disconnection-requests`.
+        Behaviour is identical; this alias is scheduled for removal in v1.0.0.
+      security:
+        - pdsSession: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "202":
+          description: Disconnection request accepted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DisconnectionReceipt"
+        default:
+          $ref: "#/components/responses/Problem"
+
+  /v1/account/deletion-requests/{requestId}:
+    get:
+      operationId: getAccountDeletion
+      deprecated: true
+      tags: [data]
+      summary: Deprecated alias for reading a disconnection request.
+      description: |
+        Deprecated. Use `GET /v1/service-disconnection-requests/{requestId}`.
+      security:
+        - pdsSession: []
+      parameters:
+        - $ref: "#/components/parameters/RequestID"
+      responses:
+        "200":
+          description: Disconnection request state.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DisconnectionReceipt"
         default:
           $ref: "#/components/responses/Problem"
 
@@ -413,6 +543,42 @@ components:
         type: string
         minLength: 1
         maxLength: 512
+    RequestID:
+      name: requestId
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+    IfMatch:
+      name: If-Match
+      in: header
+      required: false
+      description: |
+        The record CID last read by the client, as a quoted strong entity
+        tag: `"bafyrei…"`. The server forwards it to the PDS as a
+        compare-and-swap, so a record that changed in the meantime is
+        rejected with `record-conflict` (412) and left untouched.
+
+        Omitting the header makes the mutation unconditional. Malformed or
+        unquoted values are rejected with `invalid-request` (400).
+      schema:
+        type: string
+        pattern: '^"[A-Za-z0-9]+"$'
+      examples:
+        quotedCID:
+          value: '"bafyreiexamplecid"'
+
+  headers:
+    ETag:
+      description: |
+        The record's CID as a strong entity tag. This identifies the record
+        revision, not a hash of the response body, so it must not be used
+        for HTTP response caching — only fed back as `If-Match`.
+      schema:
+        type: string
+      example: '"bafyreiexamplecid"'
 
   responses:
     Problem:
@@ -487,6 +653,8 @@ components:
       properties:
         uri:
           $ref: "#/components/schemas/AtUri"
+        cid:
+          $ref: "#/components/schemas/CID"
         name:
           type: string
         description:
@@ -497,6 +665,14 @@ components:
           type: string
         urls:
           $ref: "#/components/schemas/PublicationUrls"
+
+    CID:
+      type: string
+      description: |
+        Content identifier of the record revision. Send it back as a quoted
+        `If-Match` value to make a mutation conditional. Present on
+        responses that read or write a record.
+      examples: ["bafyreiexamplecid"]
 
     PublicationUrls:
       type: object
@@ -544,6 +720,8 @@ components:
       properties:
         uri:
           $ref: "#/components/schemas/AtUri"
+        cid:
+          $ref: "#/components/schemas/CID"
         publication:
           $ref: "#/components/schemas/AtUri"
         title:
@@ -559,7 +737,17 @@ components:
         url:
           type: string
           format: uri
-          description: Public article URL as currently served.
+          description: |
+            Canonical public URL as currently served, built from the slug.
+            Clients display and share this value and must not assemble it
+            themselves; the canonical form can change without the record
+            changing.
+        aliasUrl:
+          type: string
+          format: uri
+          description: |
+            Permanent record-key URL. It never changes, and redirects to the
+            canonical URL, so it is the safe form to embed anywhere durable.
 
     Slug:
       type: string
@@ -581,6 +769,33 @@ components:
           type: string
           format: uri
           description: Present when completed. Time-limited URL for the export archive.
+
+    DisconnectionReceipt:
+      type: object
+      description: |
+        Status of a service-disconnection request. Retained for 24 hours
+        after completion or failure, then hard-deleted. Fields are limited to
+        this set on purpose: the point of disconnection is removing
+        service-held data, so the receipt must not reintroduce a handle, an
+        email address, or any content.
+      required: [id, ownerDid, status, createdAt]
+      properties:
+        id:
+          type: string
+        ownerDid:
+          $ref: "#/components/schemas/Did"
+        status:
+          type: string
+          enum: [pending, processing, completed, failed]
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        failureCode:
+          type: string
+          description: Normalised, non-sensitive reason. Present only when failed.
 
     Problem:
       type: object

@@ -9,6 +9,30 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+// Defines values for DisconnectionReceiptStatus.
+const (
+	DisconnectionReceiptStatusCompleted  DisconnectionReceiptStatus = "completed"
+	DisconnectionReceiptStatusFailed     DisconnectionReceiptStatus = "failed"
+	DisconnectionReceiptStatusPending    DisconnectionReceiptStatus = "pending"
+	DisconnectionReceiptStatusProcessing DisconnectionReceiptStatus = "processing"
+)
+
+// Valid indicates whether the value is a known member of the DisconnectionReceiptStatus enum.
+func (e DisconnectionReceiptStatus) Valid() bool {
+	switch e {
+	case DisconnectionReceiptStatusCompleted:
+		return true
+	case DisconnectionReceiptStatusFailed:
+		return true
+	case DisconnectionReceiptStatusPending:
+		return true
+	case DisconnectionReceiptStatusProcessing:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ExportJobStatus.
 const (
 	ExportJobStatusCompleted  ExportJobStatus = "completed"
@@ -54,29 +78,20 @@ func (e MemberStatus) Valid() bool {
 	}
 }
 
-// Defines values for RequestAccountDeletion202JSONResponseBodyStatus.
-const (
-	RequestAccountDeletion202JSONResponseBodyStatusCompleted  RequestAccountDeletion202JSONResponseBodyStatus = "completed"
-	RequestAccountDeletion202JSONResponseBodyStatusPending    RequestAccountDeletion202JSONResponseBodyStatus = "pending"
-	RequestAccountDeletion202JSONResponseBodyStatusProcessing RequestAccountDeletion202JSONResponseBodyStatus = "processing"
-)
-
-// Valid indicates whether the value is a known member of the RequestAccountDeletion202JSONResponseBodyStatus enum.
-func (e RequestAccountDeletion202JSONResponseBodyStatus) Valid() bool {
-	switch e {
-	case RequestAccountDeletion202JSONResponseBodyStatusCompleted:
-		return true
-	case RequestAccountDeletion202JSONResponseBodyStatusPending:
-		return true
-	case RequestAccountDeletion202JSONResponseBodyStatusProcessing:
-		return true
-	default:
-		return false
-	}
-}
-
 // Article defines model for Article.
 type Article struct {
+	// AliasUrl Permanent record-key URL. It never changes, and redirects to the
+	// canonical URL, so it is the safe form to embed anywhere durable.
+	AliasUrl *string `json:"aliasUrl,omitempty"`
+
+	// Cid Content identifier of the record revision. Send it back as a quoted
+	// `If-Match` value to make a mutation conditional. Present on
+	// responses that read or write a record.
+	//
+	//
+	// Examples: bafyreiexamplecid
+	Cid *CID `json:"cid,omitempty"`
+
 	// Publication AT URI of a record (`at://did/collection/rkey`). Permanent record identity.
 	//
 	// Examples: at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5mavarik22
@@ -93,7 +108,10 @@ type Article struct {
 	// Examples: at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5mavarik22
 	Uri AtUri `json:"uri"`
 
-	// Url Public article URL as currently served.
+	// Url Canonical public URL as currently served, built from the slug.
+	// Clients display and share this value and must not assemble it
+	// themselves; the canonical form can change without the record
+	// changing.
 	Url *string `json:"url,omitempty"`
 }
 
@@ -121,10 +139,40 @@ type ArticleInput struct {
 // Examples: at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5mavarik22
 type AtUri = string
 
+// CID Content identifier of the record revision. Send it back as a quoted
+// `If-Match` value to make a mutation conditional. Present on
+// responses that read or write a record.
+//
+// Examples: bafyreiexamplecid
+type CID = string
+
 // Did Decentralized identifier of the member. The stable identifier for all member-scoped data.
 //
 // Examples: did:plc:aaaabbbbccccddddeeeeffff
 type Did = string
+
+// DisconnectionReceipt Status of a service-disconnection request. Retained for 24 hours
+// after completion or failure, then hard-deleted. Fields are limited to
+// this set on purpose: the point of disconnection is removing
+// service-held data, so the receipt must not reintroduce a handle, an
+// email address, or any content.
+type DisconnectionReceipt struct {
+	CompletedAt *time.Time `json:"completedAt,omitempty"`
+	CreatedAt   time.Time  `json:"createdAt"`
+
+	// FailureCode Normalised, non-sensitive reason. Present only when failed.
+	FailureCode *string `json:"failureCode,omitempty"`
+	Id          string  `json:"id"`
+
+	// OwnerDid Decentralized identifier of the member. The stable identifier for all member-scoped data.
+	//
+	// Examples: did:plc:aaaabbbbccccddddeeeeffff
+	OwnerDid Did                        `json:"ownerDid"`
+	Status   DisconnectionReceiptStatus `json:"status"`
+}
+
+// DisconnectionReceiptStatus defines model for DisconnectionReceipt.Status.
+type DisconnectionReceiptStatus string
 
 // ExportJob defines model for ExportJob.
 type ExportJob struct {
@@ -174,6 +222,13 @@ type Problem struct {
 
 // Publication defines model for Publication.
 type Publication struct {
+	// Cid Content identifier of the record revision. Send it back as a quoted
+	// `If-Match` value to make a mutation conditional. Present on
+	// responses that read or write a record.
+	//
+	//
+	// Examples: bafyreiexamplecid
+	Cid         *CID    `json:"cid,omitempty"`
 	Description *string `json:"description,omitempty"`
 	Language    string  `json:"language"`
 	Name        string  `json:"name"`
@@ -219,8 +274,14 @@ type Slug = string
 // IdempotencyKey defines model for IdempotencyKey.
 type IdempotencyKey = string
 
+// IfMatch defines model for IfMatch.
+type IfMatch = string
+
 // RecordKey defines model for RecordKey.
 type RecordKey = string
+
+// RequestID defines model for RequestID.
+type RequestID = string
 
 // RequestAccountDeletionParams defines parameters for RequestAccountDeletion.
 type RequestAccountDeletionParams struct {
@@ -230,15 +291,36 @@ type RequestAccountDeletionParams struct {
 	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
 }
 
-// RequestAccountDeletion202JSONResponseBodyStatus defines parameters for RequestAccountDeletion.
-type RequestAccountDeletion202JSONResponseBodyStatus string
-
 // CreateArticleParams defines parameters for CreateArticle.
 type CreateArticleParams struct {
 	// IdempotencyKey Client-generated opaque key (for example a UUID). Retrying a request
 	// with the same key MUST NOT repeat its side effects; the server
 	// replays the original outcome.
 	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
+}
+
+// DeleteArticleParams defines parameters for DeleteArticle.
+type DeleteArticleParams struct {
+	// IfMatch The record CID last read by the client, as a quoted strong entity
+	// tag: `"bafyrei…"`. The server forwards it to the PDS as a
+	// compare-and-swap, so a record that changed in the meantime is
+	// rejected with `record-conflict` (412) and left untouched.
+	//
+	// Omitting the header makes the mutation unconditional. Malformed or
+	// unquoted values are rejected with `invalid-request` (400).
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdateArticleParams defines parameters for UpdateArticle.
+type UpdateArticleParams struct {
+	// IfMatch The record CID last read by the client, as a quoted strong entity
+	// tag: `"bafyrei…"`. The server forwards it to the PDS as a
+	// compare-and-swap, so a record that changed in the meantime is
+	// rejected with `record-conflict` (412) and left untouched.
+	//
+	// Omitting the header makes the mutation unconditional. Malformed or
+	// unquoted values are rejected with `invalid-request` (400).
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
 // RequestExportParams defines parameters for RequestExport.
@@ -262,6 +344,38 @@ type VerifyInvitationJSONBody struct {
 
 // CreatePublicationParams defines parameters for CreatePublication.
 type CreatePublicationParams struct {
+	// IdempotencyKey Client-generated opaque key (for example a UUID). Retrying a request
+	// with the same key MUST NOT repeat its side effects; the server
+	// replays the original outcome.
+	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
+}
+
+// DeletePublicationParams defines parameters for DeletePublication.
+type DeletePublicationParams struct {
+	// IfMatch The record CID last read by the client, as a quoted strong entity
+	// tag: `"bafyrei…"`. The server forwards it to the PDS as a
+	// compare-and-swap, so a record that changed in the meantime is
+	// rejected with `record-conflict` (412) and left untouched.
+	//
+	// Omitting the header makes the mutation unconditional. Malformed or
+	// unquoted values are rejected with `invalid-request` (400).
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdatePublicationParams defines parameters for UpdatePublication.
+type UpdatePublicationParams struct {
+	// IfMatch The record CID last read by the client, as a quoted strong entity
+	// tag: `"bafyrei…"`. The server forwards it to the PDS as a
+	// compare-and-swap, so a record that changed in the meantime is
+	// rejected with `record-conflict` (412) and left untouched.
+	//
+	// Omitting the header makes the mutation unconditional. Malformed or
+	// unquoted values are rejected with `invalid-request` (400).
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// RequestServiceDisconnectionParams defines parameters for RequestServiceDisconnection.
+type RequestServiceDisconnectionParams struct {
 	// IdempotencyKey Client-generated opaque key (for example a UUID). Retrying a request
 	// with the same key MUST NOT repeat its side effects; the server
 	// replays the original outcome.
@@ -304,6 +418,9 @@ type VerifyInvitationJSONRequestBody VerifyInvitationJSONBody
 
 // CreatePublicationJSONRequestBody defines body for CreatePublication for application/json ContentType.
 type CreatePublicationJSONRequestBody = PublicationInput
+
+// UpdatePublicationJSONRequestBody defines body for UpdatePublication for application/json ContentType.
+type UpdatePublicationJSONRequestBody = PublicationInput
 
 // SignupJSONRequestBody defines body for Signup for application/json ContentType.
 type SignupJSONRequestBody SignupJSONBody

@@ -28,7 +28,8 @@ URL:
 
 ```text
 {public-base-url}/@{publication-slug}                 publication page
-{public-base-url}/@{publication-slug}/{article-slug}  article page
+{public-base-url}/@{publication-slug}/{article-slug}  article page (canonical)
+{public-base-url}/@{publication-slug}/{article-rkey}  article page (permanent alias)
 {public-base-url}/@{publication-slug}/feed.xml        RSS 2.0
 {public-base-url}/@{publication-slug}/atom.xml        Atom 1.0
 ```
@@ -36,6 +37,34 @@ URL:
 Documentation and fixtures use `https://publications.example.com` as the
 base. Published feeds MUST use absolute URLs. URLs are presentation-only
 and never carry identity.
+
+### The article slug is canonical; the record key is a permanent alias
+
+The slug form is canonical: it is what feeds link to, and what the article
+page declares in `<link rel="canonical">`.
+
+Services MUST also serve the record-key form and MUST redirect it to the
+current canonical URL with `308 Permanent Redirect`.
+
+The reason for both is that a slug can change without the service being
+involved. A user may edit their own records directly through their PDS —
+that is a legitimate flow, not an error — so a service cannot guarantee it
+sees every slug change in time to keep an old URL working. The record key
+never changes, so the alias is a permanent entry point that cannot break,
+while the slug keeps published URLs readable.
+
+Consequences that follow from this, and that implementations MUST NOT get
+backwards:
+
+- Feed `<link>` values MAY change when a slug changes. That is correct;
+  item identity is the AT URI and is unaffected, so readers do not
+  re-deliver the item.
+- The record-key alias MUST NOT change when the slug, the publication slug,
+  the handle, or the base domain changes.
+- Tracking historical slugs is **not** required. The alias already
+  guarantees no permanent link ever dies, so services are free to let old
+  slug URLs 404.
+- Custom presentation domains keep both forms.
 
 ## Field Mapping
 
@@ -117,7 +146,7 @@ synthetic author DID `did:plc:aaaabbbbccccddddeeeeffff`, display name
 | `after-article-delete` | baseline minus article-create | Item gone; no tombstone |
 | `after-publication-rename` | publication-rename + baseline articles | Channel/feed title changes; item identity unchanged |
 | `after-handle-change` | baseline after the author changed handles | Byte-identical to baseline: nothing in the feed derives from the handle |
-| `after-slug-change` | baseline with article slug `an-example-article` → `renamed-slug` | `link` changes; `guid`/`id` unchanged |
+| `after-slug-change` | baseline with article slug `an-example-article` → `renamed-slug` | `link` changes; `guid`/`id` unchanged; the record-key alias unchanged |
 | `korean-emoji` | article-korean + article-emoji | UTF-8, ZWJ sequences and flags intact |
 | `xml-escaping` | article-xml-special | Specials escaped in title and content |
 | `markdown-rendering` | article-markdown-links-code | Links, code block, table, strikethrough rendered |
