@@ -132,6 +132,35 @@ type does not.
 | `rate-limited` | 429 | any | No — wait | Yes, after `Retry-After` |
 | `pds-unavailable` | 502 | anything touching the PDS | No | Yes |
 
+### `reason` names the cause a user has to act on
+
+`type` says which class of thing went wrong; it is often not specific enough to
+tell the user what to change. `invalid-request` covers a rejected email and a
+rejected password alike, and a client that shows `detail` instead is showing
+English prose written for whoever reads the log.
+
+So a problem document MAY carry a `reason`: a machine-readable cause a client
+translates into its own words. Clients MUST treat an unrecognised value as
+absent and fall back to `type`, because values are added additively.
+
+| `reason` | Usual `type` | Means |
+|---|---|---|
+| `email-already-used` | `invalid-request` | Another account already uses that email address |
+| `email-invalid` | `invalid-request` | The repository host rejected the address itself |
+| `password-too-weak` | `invalid-request` | The repository host requires a stronger password |
+| `handle-taken` | `handle-unavailable` | Someone already holds that handle |
+| `handle-invalid` | `invalid-request` | The name is not a usable handle label |
+| `invitation-not-found` | `invalid-invitation` | No such invitation |
+| `invitation-expired` | `invalid-invitation` | The invitation is past its expiry |
+| `invitation-exhausted` | `invalid-invitation` | The invitation has no uses left |
+| `account-password-mismatch` | `invalid-session` | The account already exists and this password does not open it |
+| `repository-host-rejected` | `invalid-request` | The host refused for a reason the service could not classify |
+
+`account-password-mismatch` is reachable on signup, not only on sign-in: a
+resumed signup trades the password for a session, so a retry carrying a
+different password than the attempt that created the account lands here. A
+client should offer signing in rather than another attempt at signing up.
+
 `Retry-After` is sent with `rate-limited` and MAY be sent with
 `pds-unavailable`. It is a delay in seconds.
 

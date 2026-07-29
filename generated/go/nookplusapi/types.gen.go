@@ -78,6 +78,48 @@ func (e MemberStatus) Valid() bool {
 	}
 }
 
+// Defines values for ProblemReason.
+const (
+	AccountPasswordMismatch ProblemReason = "account-password-mismatch"
+	EmailAlreadyUsed        ProblemReason = "email-already-used"
+	EmailInvalid            ProblemReason = "email-invalid"
+	HandleInvalid           ProblemReason = "handle-invalid"
+	HandleTaken             ProblemReason = "handle-taken"
+	InvitationExhausted     ProblemReason = "invitation-exhausted"
+	InvitationExpired       ProblemReason = "invitation-expired"
+	InvitationNotFound      ProblemReason = "invitation-not-found"
+	PasswordTooWeak         ProblemReason = "password-too-weak"
+	RepositoryHostRejected  ProblemReason = "repository-host-rejected"
+)
+
+// Valid indicates whether the value is a known member of the ProblemReason enum.
+func (e ProblemReason) Valid() bool {
+	switch e {
+	case AccountPasswordMismatch:
+		return true
+	case EmailAlreadyUsed:
+		return true
+	case EmailInvalid:
+		return true
+	case HandleInvalid:
+		return true
+	case HandleTaken:
+		return true
+	case InvitationExhausted:
+		return true
+	case InvitationExpired:
+		return true
+	case InvitationNotFound:
+		return true
+	case PasswordTooWeak:
+		return true
+	case RepositoryHostRejected:
+		return true
+	default:
+		return false
+	}
+}
+
 // Article defines model for Article.
 type Article struct {
 	// AliasUrl Permanent record-key URL. It never changes, and redirects to the
@@ -213,12 +255,23 @@ type MemberStatus string
 type Problem struct {
 	Detail   *string `json:"detail,omitempty"`
 	Instance *string `json:"instance,omitempty"`
-	Status   int     `json:"status"`
-	Title    string  `json:"title"`
+
+	// Reason Machine-readable cause, more specific than `type`. Present only when the cause is one a client should phrase in its own words: `detail` is English prose written for a developer reading a log, so a client that shows it to a user shows untranslated text. Clients MUST treat an unrecognised value as absent and fall back to `type`. Values are added additively and never repurposed.
+	//
+	//
+	// Examples: email-already-used
+	Reason *ProblemReason `json:"reason,omitempty"`
+	Status int            `json:"status"`
+	Title  string         `json:"title"`
 
 	// Type URI identifying the error type. Defaults to `about:blank`.
 	Type *string `json:"type,omitempty"`
 }
+
+// ProblemReason Machine-readable cause, more specific than `type`. Present only when the cause is one a client should phrase in its own words: `detail` is English prose written for a developer reading a log, so a client that shows it to a user shows untranslated text. Clients MUST treat an unrecognised value as absent and fall back to `type`. Values are added additively and never repurposed.
+//
+// Examples: email-already-used
+type ProblemReason string
 
 // Publication defines model for Publication.
 type Publication struct {

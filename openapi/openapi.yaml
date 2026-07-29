@@ -822,3 +822,24 @@ components:
           type: string
         instance:
           type: string
+        reason:
+          type: string
+          description: >
+            Machine-readable cause, more specific than `type`. Present only when
+            the cause is one a client should phrase in its own words: `detail` is
+            English prose written for a developer reading a log, so a client that
+            shows it to a user shows untranslated text. Clients MUST treat an
+            unrecognised value as absent and fall back to `type`. Values are
+            added additively and never repurposed.
+          enum:
+            - email-already-used
+            - email-invalid
+            - password-too-weak
+            - handle-taken
+            - handle-invalid
+            - invitation-not-found
+            - invitation-expired
+            - invitation-exhausted
+            - account-password-mismatch
+            - repository-host-rejected
+          examples: ["email-already-used"]

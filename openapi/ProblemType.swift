@@ -70,3 +70,61 @@ extension ProblemType {
         self = known
     }
 }
+
+/// Machine-readable cause, more specific than ``ProblemType``.
+///
+/// Exists because `type` is often too coarse to tell a user what to change:
+/// `invalidRequest` covers a rejected email and a rejected password alike, and
+/// the alternative — showing `detail` — puts untranslated developer prose in
+/// front of a user.
+///
+/// A client phrases these in its own words. Present only sometimes: absence is
+/// normal and means fall back to ``ProblemType``.
+public enum ProblemReason: String, Codable, Sendable, CaseIterable {
+    case emailAlreadyUsed = "email-already-used"
+    case emailInvalid = "email-invalid"
+    case passwordTooWeak = "password-too-weak"
+    case handleTaken = "handle-taken"
+    case handleInvalid = "handle-invalid"
+    case invitationNotFound = "invitation-not-found"
+    case invitationExpired = "invitation-expired"
+    case invitationExhausted = "invitation-exhausted"
+    /// Signup found the account already created and this password does not open
+    /// it. Reachable on signup, not only sign-in, because a resumed signup
+    /// trades the password for a session.
+    case accountPasswordMismatch = "account-password-mismatch"
+    case repositoryHostRejected = "repository-host-rejected"
+
+    /// Which field, if any, the user should go back and change. Drives where a
+    /// form puts the focus.
+    public var offendingField: Field? {
+        switch self {
+        case .emailAlreadyUsed, .emailInvalid: .email
+        case .passwordTooWeak, .accountPasswordMismatch: .password
+        case .handleTaken, .handleInvalid: .handle
+        case .invitationNotFound, .invitationExpired, .invitationExhausted: .invitation
+        case .repositoryHostRejected: nil
+        }
+    }
+
+    public enum Field: Sendable, CaseIterable {
+        case email
+        case password
+        case handle
+        case invitation
+    }
+}
+
+extension ProblemReason {
+    /// Interprets a raw `reason`, tolerating one this build does not know.
+    ///
+    /// Values are added additively, so an unrecognised one must read as absent
+    /// rather than as an error: an older client stays usable against a newer
+    /// service.
+    public init?(unchecked rawValue: String?) {
+        guard let rawValue, let known = ProblemReason(rawValue: rawValue) else {
+            return nil
+        }
+        self = known
+    }
+}
