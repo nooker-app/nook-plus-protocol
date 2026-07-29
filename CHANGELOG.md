@@ -3,6 +3,29 @@
 Repository releases are semantic version tags describing the repository and
 its generated artifacts; see `docs/versioning.md`.
 
+## v0.2.2 — 2026-07-30
+
+No Lexicon changes.
+
+Added:
+
+- `reason` on problem documents: a small closed vocabulary naming the cause
+  a user has to act on, for the cases where `type` is too coarse to say what
+  to change. A client translates it; `detail` stays English prose for logs.
+  Additive in both directions — a service may omit it, and a client MUST read
+  an unrecognised value as absent and fall back to `type`.
+- `ProblemReason` in the Swift package, with `offendingField` so a form knows
+  where to put the focus.
+
+## v0.2.1 — 2026-07-29
+
+No Lexicon changes.
+
+Added:
+
+- `handleResolves` on the signup response, so a client can distinguish an
+  account whose handle has not propagated yet from a failure.
+
 ## v0.2.0 — 2026-07-29
 
 No Lexicon changes: NSIDs, fields, and constraints are untouched, so every
