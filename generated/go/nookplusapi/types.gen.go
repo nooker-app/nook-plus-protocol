@@ -354,25 +354,53 @@ type CreateArticleParams struct {
 
 // DeleteArticleParams defines parameters for DeleteArticle.
 type DeleteArticleParams struct {
-	// IfMatch The record CID last read by the client, as a quoted strong entity
-	// tag: `"bafyrei…"`. The server forwards it to the PDS as a
-	// compare-and-swap, so a record that changed in the meantime is
+	// IfMatch The record CID last read by the client. The server forwards it to the
+	// PDS as a compare-and-swap, so a record that changed in the meantime is
 	// rejected with `record-conflict` (412) and left untouched.
 	//
-	// Omitting the header makes the mutation unconditional. Malformed or
-	// unquoted values are rejected with `invalid-request` (400).
+	// A quoted strong entity tag (`"bafyrei…"`) is the preferred form and
+	// matches what `ETag` returns. Two further forms are accepted, because a
+	// client cannot always produce the first one:
+	//
+	// - the bare CID: `bafyrei…`
+	// - the quoted form with its quotes percent-encoded: `%22bafyrei…%22`
+	//
+	// The third exists because generated clients commonly serialize a header
+	// value as a URI component, which percent-encodes `"`. Such a client
+	// feeding an `ETag` straight back sends `%22…%22` and has no way not to.
+	// A server MUST accept all three and treat them as the same CID.
+	//
+	// Omitting the header makes the mutation unconditional. An empty entity
+	// tag (`""`) is NOT equivalent to omitting it: it names no CID to compare
+	// against, and is rejected with `invalid-request` (400) rather than
+	// silently discarding the guarantee this header exists to provide. Any
+	// other value is rejected the same way.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
 // UpdateArticleParams defines parameters for UpdateArticle.
 type UpdateArticleParams struct {
-	// IfMatch The record CID last read by the client, as a quoted strong entity
-	// tag: `"bafyrei…"`. The server forwards it to the PDS as a
-	// compare-and-swap, so a record that changed in the meantime is
+	// IfMatch The record CID last read by the client. The server forwards it to the
+	// PDS as a compare-and-swap, so a record that changed in the meantime is
 	// rejected with `record-conflict` (412) and left untouched.
 	//
-	// Omitting the header makes the mutation unconditional. Malformed or
-	// unquoted values are rejected with `invalid-request` (400).
+	// A quoted strong entity tag (`"bafyrei…"`) is the preferred form and
+	// matches what `ETag` returns. Two further forms are accepted, because a
+	// client cannot always produce the first one:
+	//
+	// - the bare CID: `bafyrei…`
+	// - the quoted form with its quotes percent-encoded: `%22bafyrei…%22`
+	//
+	// The third exists because generated clients commonly serialize a header
+	// value as a URI component, which percent-encodes `"`. Such a client
+	// feeding an `ETag` straight back sends `%22…%22` and has no way not to.
+	// A server MUST accept all three and treat them as the same CID.
+	//
+	// Omitting the header makes the mutation unconditional. An empty entity
+	// tag (`""`) is NOT equivalent to omitting it: it names no CID to compare
+	// against, and is rejected with `invalid-request` (400) rather than
+	// silently discarding the guarantee this header exists to provide. Any
+	// other value is rejected the same way.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
@@ -405,25 +433,53 @@ type CreatePublicationParams struct {
 
 // DeletePublicationParams defines parameters for DeletePublication.
 type DeletePublicationParams struct {
-	// IfMatch The record CID last read by the client, as a quoted strong entity
-	// tag: `"bafyrei…"`. The server forwards it to the PDS as a
-	// compare-and-swap, so a record that changed in the meantime is
+	// IfMatch The record CID last read by the client. The server forwards it to the
+	// PDS as a compare-and-swap, so a record that changed in the meantime is
 	// rejected with `record-conflict` (412) and left untouched.
 	//
-	// Omitting the header makes the mutation unconditional. Malformed or
-	// unquoted values are rejected with `invalid-request` (400).
+	// A quoted strong entity tag (`"bafyrei…"`) is the preferred form and
+	// matches what `ETag` returns. Two further forms are accepted, because a
+	// client cannot always produce the first one:
+	//
+	// - the bare CID: `bafyrei…`
+	// - the quoted form with its quotes percent-encoded: `%22bafyrei…%22`
+	//
+	// The third exists because generated clients commonly serialize a header
+	// value as a URI component, which percent-encodes `"`. Such a client
+	// feeding an `ETag` straight back sends `%22…%22` and has no way not to.
+	// A server MUST accept all three and treat them as the same CID.
+	//
+	// Omitting the header makes the mutation unconditional. An empty entity
+	// tag (`""`) is NOT equivalent to omitting it: it names no CID to compare
+	// against, and is rejected with `invalid-request` (400) rather than
+	// silently discarding the guarantee this header exists to provide. Any
+	// other value is rejected the same way.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
 // UpdatePublicationParams defines parameters for UpdatePublication.
 type UpdatePublicationParams struct {
-	// IfMatch The record CID last read by the client, as a quoted strong entity
-	// tag: `"bafyrei…"`. The server forwards it to the PDS as a
-	// compare-and-swap, so a record that changed in the meantime is
+	// IfMatch The record CID last read by the client. The server forwards it to the
+	// PDS as a compare-and-swap, so a record that changed in the meantime is
 	// rejected with `record-conflict` (412) and left untouched.
 	//
-	// Omitting the header makes the mutation unconditional. Malformed or
-	// unquoted values are rejected with `invalid-request` (400).
+	// A quoted strong entity tag (`"bafyrei…"`) is the preferred form and
+	// matches what `ETag` returns. Two further forms are accepted, because a
+	// client cannot always produce the first one:
+	//
+	// - the bare CID: `bafyrei…`
+	// - the quoted form with its quotes percent-encoded: `%22bafyrei…%22`
+	//
+	// The third exists because generated clients commonly serialize a header
+	// value as a URI component, which percent-encodes `"`. Such a client
+	// feeding an `ETag` straight back sends `%22…%22` and has no way not to.
+	// A server MUST accept all three and treat them as the same CID.
+	//
+	// Omitting the header makes the mutation unconditional. An empty entity
+	// tag (`""`) is NOT equivalent to omitting it: it names no CID to compare
+	// against, and is rejected with `invalid-request` (400) rather than
+	// silently discarding the guarantee this header exists to provide. Any
+	// other value is rejected the same way.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 

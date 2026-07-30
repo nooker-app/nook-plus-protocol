@@ -78,12 +78,28 @@ compare-and-swap, so the write is rejected if the record changed in the
 meantime. This exposes AT Protocol's `swapRecord` semantics directly rather
 than inventing a parallel versioning scheme.
 
+Two further spellings of the same CID are accepted, because a client cannot
+always produce the quoted one:
+
+```text
+If-Match: bafyreiexamplecid
+If-Match: %22bafyreiexamplecid%22
+```
+
+The second exists because generated clients commonly serialize a header value
+as a URI component, which percent-encodes `"`. Such a client feeding an `ETag`
+straight back sends `%22…%22` and has no way not to. Servers MUST accept all
+three forms and treat them as the same CID.
+
 Rules:
 
-- A quoted CID that no longer matches → `412` with `record-conflict`, and no
-  mutation occurs.
-- A malformed or unquoted `If-Match` → `400` with `invalid-request`. The
-  header is wrong, not the record.
+- A CID that no longer matches → `412` with `record-conflict`, and no mutation
+  occurs.
+- An `If-Match` that is none of the three forms → `400` with
+  `invalid-request`. The header is wrong, not the record.
+- An empty entity tag (`""`) → `400`. It is not the same as omitting the
+  header: it names no CID to compare, and treating it as unconditional would
+  discard the guarantee silently.
 - `DELETE` of a record that is already gone → `204`, whether or not
   `If-Match` was sent.
 - No `If-Match` → the mutation is unconditional. Clients that skip it accept

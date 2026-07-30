@@ -3,6 +3,28 @@
 Repository releases are semantic version tags describing the repository and
 its generated artifacts; see `docs/versioning.md`.
 
+## v0.2.3 — 2026-07-30
+
+No Lexicon changes.
+
+Relaxed:
+
+- `If-Match` now accepts three spellings of the same CID: the quoted entity tag
+  (`"bafyrei…"`), the bare CID (`bafyrei…`), and the quoted form with its quotes
+  percent-encoded (`%22bafyrei…%22`). A server MUST accept all three and treat
+  them as the same value.
+
+  The third is not hypothetical. Header values are commonly serialized by
+  generated clients as URI components, which percent-encodes `"`; a client
+  feeding an `ETag` back therefore sends `%22…%22` and has no way not to. The
+  previous wording required the quoted form and rejected everything else, which
+  left a conforming generated client unable to delete a record at all.
+
+  This is a relaxation, so every client that satisfied the old rule satisfies
+  this one. An empty entity tag (`""`) is still rejected: it names no CID, and
+  accepting it would quietly turn a conditional mutation into an unconditional
+  one.
+
 ## v0.2.2 — 2026-07-30
 
 No Lexicon changes.
