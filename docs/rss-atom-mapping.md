@@ -102,8 +102,14 @@ raw DID presented as a URL.
 
 ## Content Rendering
 
-- `article.content` is Markdown (CommonMark + GFM tables and
-  strikethrough; see `lexicons.md`).
+- `article.content` is Markdown (CommonMark + GFM tables and strikethrough,
+  footnotes, and `[TOC]`; see `lexicons.md`).
+- Element identifiers generated inside a feed item — heading anchors and
+  footnotes — MUST be namespaced per article. A feed is one document holding
+  many articles, so an unqualified `fn:1` or a bare heading anchor is claimed by
+  every item that has one, and a reader following such a link lands in whichever
+  item came first. Links to them stay document-relative fragments: the target is
+  in the same content the reader is showing.
 - The rendered HTML is embedded as escaped text inside `content:encoded`
   (RSS) and `content type="html"` (Atom). CDATA sections MAY be used in
   RSS; fixtures use plain escaping.

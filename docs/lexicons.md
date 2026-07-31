@@ -69,10 +69,55 @@ present, drives update signaling in feeds.
 ## Markdown Dialect
 
 `article.content` is Markdown: CommonMark plus the GFM tables and
-strikethrough extensions. Raw HTML blocks in Markdown MUST be treated as
-untrusted input by renderers (escaped or sanitized, never emitted verbatim
-into feeds or pages without sanitization). Rendering requirements for feeds
-live in `rss-atom-mapping.md`.
+strikethrough extensions, footnotes, and a table-of-contents marker. Raw HTML
+blocks in Markdown MUST be treated as untrusted input by renderers (escaped or
+sanitized, never emitted verbatim into feeds or pages without sanitization).
+Rendering requirements for feeds live in `rss-atom-mapping.md`.
+
+### Footnotes
+
+A reference is `[^label]` and its definition is `[^label]: content`, as in
+Pandoc and PHP Markdown Extra. Labels are identifiers only, never presentation:
+a renderer MUST number footnotes by order of first reference and MUST NOT emit
+the label. A reference with no matching definition is not a footnote and SHOULD
+be left as the author wrote it.
+
+Numbering rather than labelling is a requirement, not a stylistic preference. A
+label is arbitrary author text on a path to an `id` and an `href`, and numbering
+removes that path rather than sanitizing it.
+
+### Table Of Contents
+
+A block consisting only of `[TOC]`, matched ASCII-case-insensitively and
+ignoring surrounding whitespace, is replaced by a nested list of links to the
+document's headings, in document order and nested by heading level. The marker
+has no meaning inside a code span or fence, or within a larger paragraph. A
+document with no headings renders no list, and the marker MUST NOT survive into
+the output.
+
+This is an `app.nooker` extension rather than CommonMark, and a client offering
+it should say so.
+
+### Heading Anchors
+
+A renderer MUST give every heading a fragment identifier derived from the
+heading's text content:
+
+1. Fold diacritics over Latin letters only — `Café` becomes `cafe`. A mark over
+   another script is part of the letter and MUST be kept: Japanese `じ`
+   decomposes to `し` plus a dakuten, and folding that changes the word.
+2. Keep letters and digits, lowercased; replace every other character with a
+   hyphen.
+3. Collapse runs of hyphens and trim them from both ends.
+4. A heading with nothing left is `section`.
+5. Repeats leave the first unsuffixed and number the rest from `-2`.
+
+Letters, not ASCII. A scheme restricted to ASCII gives every heading in Korean,
+Japanese, or Chinese the same empty anchor, which makes a table of contents
+useless in the languages this contract is most used in.
+
+The resulting alphabet — letters, digits, and hyphen — is what makes an anchor
+safe to place in an `id` or an `href` without further escaping.
 
 ## Missing References And Orphans
 

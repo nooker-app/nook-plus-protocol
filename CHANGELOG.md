@@ -3,6 +3,39 @@
 Repository releases are semantic version tags describing the repository and
 its generated artifacts; see `docs/versioning.md`.
 
+## v0.2.4 — 2026-07-31
+
+No Lexicon changes.
+
+Added to the Markdown dialect, which the composer already offers and so was
+already in use before being written down here:
+
+- **Footnotes.** `[^label]` and `[^label]: content`, as in Pandoc and PHP
+  Markdown Extra. Labels are identifiers only: a renderer MUST number footnotes
+  by order of first reference and MUST NOT emit the label. That is a security
+  requirement rather than a stylistic one — a label is arbitrary author text on
+  a path to an `id` and an `href`, and numbering removes the path instead of
+  sanitizing it. An undefined reference is not a footnote.
+
+- **`[TOC]`.** A block that is only the marker becomes a nested list of links to
+  the document's headings. Case-insensitive, whitespace-tolerant, and inert
+  inside a code span or fence or within a larger paragraph. No headings means no
+  list, and the marker never reaches the output.
+
+- **Heading anchors.** Specified, because both features link to them and because
+  the obvious implementation is wrong for most of this contract's traffic:
+  restricting anchors to ASCII gives every Korean, Japanese, or Chinese heading
+  the same empty identifier. Diacritics fold over Latin letters only — folding
+  every combining mark turns Japanese `じ` into `し`, a different word. The
+  resulting alphabet of letters, digits, and hyphen is what makes an anchor safe
+  in an attribute without further escaping.
+
+Feed requirement:
+
+- Identifiers generated inside a feed item MUST be namespaced per article. One
+  feed document holds many articles, so an unqualified `fn:1` is claimed by every
+  item that has a footnote. Links to them stay document-relative fragments.
+
 ## v0.2.3 — 2026-07-30
 
 No Lexicon changes.
