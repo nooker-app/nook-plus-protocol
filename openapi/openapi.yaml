@@ -672,6 +672,13 @@ components:
           type: string
           description: BCP-47 language tag.
           maxLength: 128
+        icon:
+          allOf:
+            - $ref: "#/components/schemas/BlobRef"
+          description: |
+            Icon for the publication. This request replaces the record, so an
+            omitted icon is removed — the same rule `description` already follows.
+            A client editing anything else must send the icon it wants kept.
 
     Publication:
       type: object
@@ -691,6 +698,40 @@ components:
           type: string
         urls:
           $ref: "#/components/schemas/PublicationUrls"
+        icon:
+          allOf:
+            - $ref: "#/components/schemas/BlobRef"
+          description: Present when the publication carries its own icon.
+        iconUrl:
+          type: string
+          format: uri
+          description: |
+            Where the icon is served from, once the service has derived its
+            delivery form. Absent until the first render after an upload, and
+            absent entirely for a publication using the service's own mark.
+
+    BlobRef:
+      type: object
+      description: |
+        Reference to a blob already uploaded to the caller's own repository with
+        `com.atproto.repo.uploadBlob`.
+
+        The bytes never pass through this API. A client holds a PDS session, so it
+        uploads to its own repository and sends the reference here; routing the
+        image through the service would put user content in a second place for no
+        gain and make the upload depend on the service being reachable.
+      required: [ref, mimeType, size]
+      properties:
+        ref:
+          $ref: "#/components/schemas/CID"
+        mimeType:
+          type: string
+          description: Must be one of the types the Lexicon accepts for the field.
+          examples: ["image/png"]
+        size:
+          type: integer
+          format: int64
+          description: Byte length the repository reported for the stored blob.
 
     CID:
       type: string

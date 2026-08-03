@@ -181,6 +181,31 @@ type ArticleInput struct {
 // Examples: at://did:plc:aaaabbbbccccddddeeeeffff/app.nooker.publication/3jt5mavarik22
 type AtUri = string
 
+// BlobRef Reference to a blob already uploaded to the caller's own repository with
+// `com.atproto.repo.uploadBlob`.
+//
+// The bytes never pass through this API. A client holds a PDS session, so it
+// uploads to its own repository and sends the reference here; routing the
+// image through the service would put user content in a second place for no
+// gain and make the upload depend on the service being reachable.
+type BlobRef struct {
+	// MimeType Must be one of the types the Lexicon accepts for the field.
+	//
+	// Examples: image/png
+	MimeType string `json:"mimeType"`
+
+	// Ref Content identifier of the record revision. Send it back as a quoted
+	// `If-Match` value to make a mutation conditional. Present on
+	// responses that read or write a record.
+	//
+	//
+	// Examples: bafyreiexamplecid
+	Ref CID `json:"ref"`
+
+	// Size Byte length the repository reported for the stored blob.
+	Size int64 `json:"size"`
+}
+
 // CID Content identifier of the record revision. Send it back as a quoted
 // `If-Match` value to make a mutation conditional. Present on
 // responses that read or write a record.
@@ -283,8 +308,16 @@ type Publication struct {
 	// Examples: bafyreiexamplecid
 	Cid         *CID    `json:"cid,omitempty"`
 	Description *string `json:"description,omitempty"`
-	Language    string  `json:"language"`
-	Name        string  `json:"name"`
+
+	// Icon Present when the publication carries its own icon.
+	Icon *BlobRef `json:"icon,omitempty"`
+
+	// IconUrl Where the icon is served from, once the service has derived its
+	// delivery form. Absent until the first render after an upload, and
+	// absent entirely for a publication using the service's own mark.
+	IconUrl  *string `json:"iconUrl,omitempty"`
+	Language string  `json:"language"`
+	Name     string  `json:"name"`
 
 	// Slug Lowercase ASCII letters, digits, and hyphens; no leading or trailing hyphen.
 	Slug Slug `json:"slug"`
@@ -299,6 +332,11 @@ type Publication struct {
 // PublicationInput Fields for an `app.nooker.publication` record. Constraints follow the Lexicon.
 type PublicationInput struct {
 	Description *string `json:"description,omitempty"`
+
+	// Icon Icon for the publication. This request replaces the record, so an
+	// omitted icon is removed — the same rule `description` already follows.
+	// A client editing anything else must send the icon it wants kept.
+	Icon *BlobRef `json:"icon,omitempty"`
 
 	// Language BCP-47 language tag.
 	Language string `json:"language"`

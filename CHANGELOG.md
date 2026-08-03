@@ -25,6 +25,21 @@ Lexicon change, additive:
 - Feed mapping gains the icon: RSS `image` (`url`, `title`, `link`) and Atom
   `icon`/`logo`, falling back to the service's own mark.
 
+HTTP API, additive:
+
+- **`PublicationInput.icon` and `Publication.icon`/`iconUrl`.** A client uploads
+  the image to its own repository with `com.atproto.repo.uploadBlob` and sends the
+  reference; the bytes never pass through this API. Putting them through it would
+  place user content in a second location for no gain and make the upload depend
+  on the service being reachable.
+
+  `PUT /v1/publications/{rkey}` replaces the record, so an omitted icon is
+  removed — the rule `description` already follows. A client editing anything else
+  must send the icon it wants kept.
+
+  `iconUrl` is where the derived icon is served from. Absent until the first
+  render after an upload, and absent for a publication using the service's mark.
+
 Also in this release, and not a contract change:
 
 - The conformance harness parses record fixtures through the AT Protocol data
