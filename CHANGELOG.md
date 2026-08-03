@@ -3,6 +3,37 @@
 Repository releases are semantic version tags describing the repository and
 its generated artifacts; see `docs/versioning.md`.
 
+## v0.3.0 — 2026-08-03
+
+Lexicon change, additive:
+
+- **`app.nooker.publication.icon`.** An OPTIONAL blob (`image/png` or
+  `image/jpeg`, at most 500,000 bytes) giving a publication its own icon, used as
+  the favicon of its pages and as its feed image. Omitting it means the
+  publishing implementation's own mark, which is what every publication showed
+  before the field existed, so records written under the previous revision remain
+  valid and unchanged in meaning.
+
+  The blob is the source image rather than a delivery artifact: an implementation
+  derives the sizes and formats its delivery needs, so a client uploads one square
+  image and does not produce an `.ico`. See `docs/lexicons.md` for the rules and
+  for the part worth knowing before the feature is offered to anyone — a search
+  engine shows one favicon per hostname, so a per-publication icon reaches browser
+  tabs, feed readers, and share cards, but not search results, until the
+  publication has a host of its own.
+
+- Feed mapping gains the icon: RSS `image` (`url`, `title`, `link`) and Atom
+  `icon`/`logo`, falling back to the service's own mark.
+
+Also in this release, and not a contract change:
+
+- The conformance harness parses record fixtures through the AT Protocol data
+  model instead of `encoding/json`. The two disagree about the types the model
+  defines — a blob arrives as `{"$type":"blob", ...}` and the validator expects it
+  to have become a blob rather than a plain map — so no fixture carrying one could
+  have validated. Decoding fixtures the way the protocol decodes them is also
+  closer to what they are for.
+
 ## v0.2.4 — 2026-07-31
 
 No Lexicon changes.

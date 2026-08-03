@@ -4,11 +4,11 @@
 package conformance
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
 
+	"github.com/bluesky-social/indigo/atproto/atdata"
 	"github.com/bluesky-social/indigo/atproto/lexicon"
 )
 
@@ -29,8 +29,13 @@ func loadRecordFixture(t *testing.T, path string) (map[string]any, string) {
 	if err != nil {
 		t.Fatalf("reading %s: %v", path, err)
 	}
-	var record map[string]any
-	if err := json.Unmarshal(raw, &record); err != nil {
+	// Parsed through the AT Protocol data model rather than encoding/json.
+	// The two disagree on the types the model defines: a blob arrives as
+	// `{"$type":"blob", ...}` and the validator expects it to have become a
+	// data.Blob, which a plain map never is. Decoding a record the way the
+	// protocol decodes it is also what the fixtures are meant to be checking.
+	record, err := atdata.UnmarshalJSON(raw)
+	if err != nil {
 		t.Fatalf("parsing %s: %v", path, err)
 	}
 	nsid, ok := record["$type"].(string)

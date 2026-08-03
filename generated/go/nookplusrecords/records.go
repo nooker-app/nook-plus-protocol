@@ -25,8 +25,29 @@ type Publication struct {
 	Description *string `json:"description,omitempty"`
 	Slug        string  `json:"slug"`
 	Language    string  `json:"language"`
+	Icon        *Blob   `json:"icon,omitempty"`
 	CreatedAt   string  `json:"createdAt"`
 	UpdatedAt   *string `json:"updatedAt,omitempty"`
+}
+
+// Blob is a reference to a blob stored in the repository, as the AT Protocol
+// data model represents one in JSON.
+//
+// Kept as its own type rather than reusing an implementation's: this package is
+// the public contract, and a consumer should not have to depend on a particular
+// AT Protocol library to read a record. Size is the stored blob's byte length as
+// the repository reported it, not a limit.
+type Blob struct {
+	// Type must be "blob".
+	Type     string  `json:"$type"`
+	Ref      BlobRef `json:"ref"`
+	MimeType string  `json:"mimeType"`
+	Size     int64   `json:"size"`
+}
+
+// BlobRef holds the blob's CID under the data model's link key.
+type BlobRef struct {
+	Link string `json:"$link"`
 }
 
 // Article is an app.nooker.article record: a Markdown article belonging to

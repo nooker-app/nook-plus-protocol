@@ -1,0 +1,15 @@
+{
+  "$type": "app.nooker.publication",
+  "name": "Example Publication",
+  "slug": "example-publication",
+  "language": "en",
+  "icon": {
+    "$type": "blob",
+    "ref": {
+      "$link": "bafkreibw6qsz3yg5q7pilv6y3jj3ra5frflo4y42the5me3i7kptibte7m"
+    },
+    "mimeType": "image/gif",
+    "size": 24576
+  },
+  "createdAt": "2026-01-10T08:00:00Z"
+}

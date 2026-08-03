@@ -46,6 +46,30 @@ a user can create, but the schema does not constrain the count.
   a publication as served by that service. A decentralized schema cannot
   enforce global uniqueness, so this schema only constrains form and length.
 
+## Publication Icon
+
+`publication.icon` is an OPTIONAL blob. Omitted means the publishing
+implementation's own mark, which is what every publication showed before the
+field existed — so adding it changes nothing for records that do not carry one.
+
+- Accepted types: `image/png`, `image/jpeg`. Maximum 500,000 bytes.
+- Clients SHOULD upload a square image of at least 256×256, because every
+  delivery size is derived by downscaling and there is no way to invent detail
+  that was not uploaded.
+- The blob is the **source image, not a delivery artifact**. An implementation
+  resizes and re-encodes it for what its delivery needs — a favicon at several
+  sizes, a feed image, a touch icon — and MUST NOT assume the stored bytes are
+  directly servable at any particular size. Implementations MUST NOT require a
+  particular aspect ratio; a non-square image is fitted, not rejected.
+- The icon is presentation, like the name and the slug. Item identity never
+  depends on it, and replacing it MUST NOT re-deliver feed items.
+
+A note for implementers, because the feature is easy to over-promise: search
+engines generally show one favicon per **hostname**, taken from that host's home
+page. A publication served from a shared host therefore reaches browser tabs,
+feed readers, and share cards with its own icon, but not search results. Search
+results follow only when a publication has a host of its own.
+
 ## Size Limits And Rationale
 
 | Field | Limit | Rationale |
@@ -55,6 +79,7 @@ a user can create, but the schema does not constrain the count.
 | `article.summary`, `publication.description` | 600 graphemes / 6,000 bytes | Same pattern |
 | `publication.name` | 100 graphemes / 1,000 bytes | Same pattern |
 | slugs | 60 bytes | ASCII-only, so bytes = characters |
+| `publication.icon` | 500,000 bytes | An icon is delivered at a few hundred pixels square; this leaves room for a lossless source at 1024×1024 without inviting a photograph |
 
 Limits only ever grow (see `versioning.md`).
 

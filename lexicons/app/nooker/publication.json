@@ -34,6 +34,12 @@
             "description": "Primary language of the publication (BCP-47).",
             "format": "language"
           },
+          "icon": {
+            "type": "blob",
+            "description": "Optional icon for the publication, used as the favicon of its pages and as its feed image. Square is expected. The blob is the source image, not a delivery artifact: an implementation resizes and re-encodes it for the sizes and formats its delivery needs. Omitted means the publishing implementation's own mark.",
+            "accept": ["image/png", "image/jpeg"],
+            "maxSize": 512000
+          },
           "createdAt": {
             "type": "string",
             "description": "Client-declared creation time (RFC 3339).",

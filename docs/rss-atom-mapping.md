@@ -80,6 +80,7 @@ backwards:
 | `publication.language` | `language` | `xml:lang` attribute (RECOMMENDED) |
 | newest item timestamp | `lastBuildDate` (RECOMMENDED) | `updated` (REQUIRED) |
 | author display name / profile URL | — | `author` > `name`, `uri` (feed-level) |
+| `publication.icon`, else the service's own mark | `image` > `url`, `title`, `link` | `icon`, `logo` |
 
 ### Item / Entry
 
