@@ -673,8 +673,7 @@ components:
           description: BCP-47 language tag.
           maxLength: 128
         icon:
-          allOf:
-            - $ref: "#/components/schemas/BlobRef"
+          $ref: "#/components/schemas/BlobRef"
           description: |
             Icon for the publication. This request replaces the record, so an
             omitted icon is removed — the same rule `description` already follows.
@@ -699,8 +698,7 @@ components:
         urls:
           $ref: "#/components/schemas/PublicationUrls"
         icon:
-          allOf:
-            - $ref: "#/components/schemas/BlobRef"
+          $ref: "#/components/schemas/BlobRef"
           description: Present when the publication carries its own icon.
         iconUrl:
           type: string

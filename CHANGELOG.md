@@ -3,6 +3,14 @@
 Repository releases are semantic version tags describing the repository and
 its generated artifacts; see `docs/versioning.md`.
 
+## v0.3.1 — 2026-08-04
+
+No contract semantics change. `PublicationInput.icon` and `Publication.icon` now
+reference `BlobRef` directly instead of wrapping it in a single-member `allOf`,
+which existed only to attach a description — OpenAPI 3.1 allows that beside a
+`$ref`. The wrapper made the generated Swift type an extra layer for every client
+to unwrap.
+
 ## v0.3.0 — 2026-08-03
 
 Lexicon change, additive:
